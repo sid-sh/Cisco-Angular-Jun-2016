@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Math Calculator</title>
+	<script src="angular.js"></script>
+	<script>
+		function MathCalculator(){
+			this.number1 = 0;
+			this.number2 = 0;
+			this.result = 0;
+		}
+		MathCalculator.prototype.add = function(){
+			this.result = this.number1 + this.number2;
+		}
+		MathCalculator.prototype.subtract = function(){
+			this.result = this.number1 - this.number2;
+		}
+		MathCalculator.prototype.multiply = function(){
+			this.result = this.number1 * this.number2;
+		}
+		MathCalculator.prototype.divide = function(){
+			this.result = this.number1 / this.number2;
+		}
+
+		angular
+			.module("ng")
+			.run(function($rootScope){
+				$rootScope.calculator = new MathCalculator();
+				$rootScope.operation = '';
+				$rootScope.calculate = function(){
+					switch($rootScope.operation){
+						case 'add':
+							$rootScope.calculator.add();
+							break;
+						case 'subtract':
+							$rootScope.calculator.subtract();
+							break;
+						case 'multiply' :
+							$rootScope.calculator.multiply();
+							break;
+						case 'divide':
+							$rootScope.calculator.divide();
+							break;
+					}
+				}
+			})
+
+	</script>
+</head>
+<body ng-app>
+	<h1>Math Calculator</h1>
+	<hr>
+	<input type="number" ng-model="calculator.number1">
+	<select ng-model="operation">
+		<option value="add">Add</option>
+		<option value="subtract">Subtract</option>
+		<option value="multiply">Multiply</option>
+		<option value="divide">Divide</option>
+	</select>
+	<input type="number" ng-model="calculator.number2">
+	<input type="button" value="Calculate" ng-click="calculate()">
+	<div id="divResult" ng-bind="calculator.result"></div>
+</body>
+</html>
