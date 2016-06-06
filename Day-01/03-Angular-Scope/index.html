@@ -17,76 +17,84 @@
 		}
 	</style>
 	<script src="jquery-1.12.4.js"></script>
+	<script src="angular.js"></script>
 	<script>
 		String.prototype.toInt = function(){
 			return parseInt(this,10);
 		};
 
 		function SalaryCalculator(){
-			//this.basic = 0;
+			this.basic = 0;
 
-			var _basic = 0;
-			this.onBasicChange = null;
-			this.getBasic = function(){
-				return _basic;
-			};
-			this.setBasic = function(value){
-				if (value === _basic) return;
-				_basic = value;
-				//trigger change notification for 'basic'
-				if (typeof this.onBasicChange === 'function')
-					this.onBasicChange();
-			};
-			
 			this.hra = 0;
 			this.da = 0;
 			this.tax = 0;
 			this.salary = 0;
 
-			this.onSalaryChange = null;
+			
 		}
 		SalaryCalculator.prototype.calculate = function(){
-			var gross = this.getBasic() + this.hra + this.da;
+			var gross = this.basic + this.hra + this.da;
 			var net = gross * ((100-this.tax)/100);
 			this.salary = net;
-			if (typeof this.onSalaryChange === 'function')
-				this.onSalaryChange();
+			
 		};
+		angular.injector(["ng"]).invoke(function($rootScope){
+			window.scope = $rootScope;
+		});
 
 		$(document).ready(function(){
-			window.calculator = new SalaryCalculator();
 
+			scope.calculator = window.calculator = new SalaryCalculator();
+			//React to user actions
 			$("#txtBasic").change(function(){
-				calculator.setBasic( $("#txtBasic").val().toInt() );
+				scope.$apply(function(){
+					calculator.basic = $("#txtBasic").val().toInt();
+				})
 			});
 			$("#txtHra").change(function(){
-				calculator.hra = $("#txtHra").val().toInt();
+				scope.$apply(function(){
+					calculator.hra = $("#txtHra").val().toInt();
+				})
 			});
 			$("#txtDa").change(function(){
-				calculator.da = $("#txtDa").val().toInt();
+				scope.$apply(function(){
+					calculator.da = $("#txtDa").val().toInt();
+				})
 			});
 			$("#rangeTax").change(function(){
-				calculator.tax = $("#rangeTax").val().toInt();
+				scope.$apply(function(){
+					calculator.tax = $("#rangeTax").val().toInt();
+				})
 			});
 
 			$("#btnCalculate").click(function(){
-
-				calculator.calculate();
-
+				scope.$apply(function(){
+					calculator.calculate();
+				})
 				
 			});
 
-			$("#rangeTax").change(function(){
-				$("#spanTax").html(this.value);
+			
+			//react to model changes
+			scope.$watch('calculator.basic', function(newValue, oldValue){
+				$("#txtBasic").val(newValue);
 			});
-
-			calculator.onBasicChange = function(){
-				$("#txtBasic").val(calculator.getBasic());
-			};
-
-			calculator.onSalaryChange = function(){
-				$("#divResult").html(calculator.salary);
-			}
+			scope.$watch('calculator.hra', function(newValue, oldValue){
+				$("#txtHra").val(newValue);
+			});
+			scope.$watch('calculator.da', function(newValue, oldValue){
+				$("#txtDa").val(newValue);
+			});
+			scope.$watch('calculator.tax', function(newValue, oldValue){
+				$("#rangeTax").val(newValue)		
+			});
+			scope.$watch('calculator.tax', function(newValue, oldValue){
+				$("#spanTax").html(newValue);
+			});
+			scope.$watch('calculator.salary', function(newValue, oldValue){
+				$("#divResult").html(newValue);
+			});
 		});
 
 	</script>
