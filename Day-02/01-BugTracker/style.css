@@ -1,0 +1,28 @@
+
+		section{
+			margin-bottom: 10px;
+		}
+		.closed{
+			color : red;
+			text-decoration: line-through;
+			font-style : italic;
+
+		}
+		ol{
+			width: 450px;
+			list-style: none;
+		}
+		li{
+			border : 1px solid gray;
+			padding: 10px;
+			margin-bottom: 5px;
+			border-radius: 5px;
+			background-color: #e7e7e7
+		}
+		li span.bugname{
+			cursor: pointer;
+
+		}
+		.bugname, .stats{
+			font-size: 14pt;
+		}
