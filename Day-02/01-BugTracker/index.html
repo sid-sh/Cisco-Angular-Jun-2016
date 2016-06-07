@@ -11,7 +11,7 @@
 		3. Toggle the closed status of the bugs - done
 		4. Remove closed bugs - done
 		5. Display statistics - done
-		6. Search for bugs
+		6. Search for bugs - done
 		7. Sort the bugs
 		8. Improvise bug display
 		9. Persist the bugs in the localStorage
@@ -26,15 +26,22 @@
 
 		
 		var bugTrackerApp = angular.module("bugTrackerApp", []);
-		bugTrackerApp.value('bugOperations', {
-			toggle : function(bug){
-				bug.isClosed = !bug.isClosed;
-			},
-			createNew : function(bugName){
-				return {					
-					name : bugName,
-					isClosed : false
-				};
+
+		bugTrackerApp.value("defaultBugName", '[Default Bug]');
+
+		bugTrackerApp.factory('bugOperations', function(defaultBugName){
+			var maxBugId = 0;
+			return {
+				toggle : function(bug){
+					bug.isClosed = !bug.isClosed;
+				},
+				createNew : function(bugName){
+					return {
+						id : ++maxBugId,					
+						name : bugName || defaultBugName,
+						isClosed : false
+					};
+				}
 			}
 		});
 
@@ -87,10 +94,10 @@
 		</section>
 		<section class="search">
 			<label for="">Search :</label>
-			<input type="text" name="" id="">
+			<input type="text" ng-model="searchBug.name">
 			<label for="">Closed ? :</label>
-			<input type="checkbox" name="" id="">
-			<input type="button" value="Show All">
+			<input type="checkbox" ng-model="searchBug.isClosed">
+			<input type="button" value="Show All" ng-click="searchBug=''">
 		</section>
 		<section class="sort">
 			<label for="">Order By :</label>
@@ -105,7 +112,8 @@
 		</section>
 		<section class="list">
 			<ol>
-				<li ng-repeat="bug in bugs" ng-class="{closed : bug.isClosed}">
+				<li ng-repeat="bug in (bugs | filter:searchBug)" 
+					ng-class="{closed : bug.isClosed}">
 					<span class="bugname" ng-click="toggle(bug)">{{bug}}</span>
 				</li>
 			</ol>
