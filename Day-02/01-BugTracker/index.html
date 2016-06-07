@@ -6,9 +6,9 @@
 	<link rel="stylesheet" href="style.css">
 	<script>
 		/*
-		1. Add new bugs
-		2. List the bugs
-		3. Toggle the closed status of the bugs
+		1. Add new bugs - done
+		2. List the bugs - done
+		3. Toggle the closed status of the bugs - done
 		4. Remove closed bugs
 		5. Display statistics
 		6. Search for bugs
@@ -26,11 +26,25 @@
 		var bugTrackerApp = angular.module("bugTrackerApp", []);
 		bugTrackerApp.controller("bugsController", function($scope){
 			$scope.bugs = [
-				"Object reference not found",
-				"Server communication failure",
-				"User authentication is wrong",
-				"Another bug"
+				{name : "Object reference not found", isClosed : false},
+				{name : "Server communication failure", isClosed : true},
+				{name : "User authentication is wrong", isClosed : false},
+				{name : "Another bug", isClosed : false},
 			];
+
+			
+			$scope.addNew = function(bugName){
+				var newBug = {
+					name : bugName,
+					isClosed : false
+				}
+				$scope.bugs.push(newBug);
+			};
+
+			$scope.toggle = function(bug){
+				bug.isClosed = !bug.isClosed;
+			}
+
 		})
 
 	</script>
@@ -43,7 +57,7 @@
 		<section class="stats">
 			<span class="closed">2</span>
 			<span>/</span>
-			<span ng-bind="bugs.length"></span>
+			<span>{{bugs.length}}</span>
 		</section>
 		<section class="search">
 			<label for="">Search :</label>
@@ -60,13 +74,14 @@
 		</section>
 		<section class="edit">
 			<label for="">Bug :</label>
-			<input type="text" name="" id="">
-			<input type="button" value="Add New">
+			<input type="text" ng-model="newBugName">
+			<input type="button" value="Add New" ng-click="addNew(newBugName)">
 		</section>
 		<section class="list">
 			<ol>
-				<li><span class="closed bugname">Bug - 1</span></li>
-				<li><span class="bugname">Bug - 2</span></li>
+				<li ng-repeat="bug in bugs" ng-class="{closed : bug.isClosed}">
+					<span class="bugname" ng-click="toggle(bug)">{{bug}}</span>
+				</li>
 			</ol>
 			<input type="button" value="Remove Closed">
 		</section>
