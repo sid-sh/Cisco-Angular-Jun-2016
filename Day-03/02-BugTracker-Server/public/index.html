@@ -99,7 +99,7 @@
 		});
 
 
-		bugTrackerApp.controller("bugsController", function($scope, bugStorage, $http){
+		bugTrackerApp.controller("bugsController", function($scope, bugStorage, $http, bugOperations){
 			
 			$scope.bugs = [];
 
@@ -109,8 +109,11 @@
 			});
 
 			$scope.addNew = function(bugName){
-				var newBug = bugStorage.add(bugName);
-				$scope.bugs.push(newBug);
+				var newBug = bugOperations.createNew(0,bugName);
+				var promise = $http.post('/bugs', newBug);
+				promise.then(function(response){
+					$scope.bugs.push(response.data);
+				});
 			};
 
 			$scope.toggle = function(bug){
