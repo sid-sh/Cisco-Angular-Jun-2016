@@ -54,13 +54,20 @@
 					templateUrl : 'bugs-new-template.html',
 					controller : 'bugsNewController'
 				})
-				.when("/details", {
-					template : '<div>Bug details will be displayed here</div>'
+				.when("/details/:id", {
+					templateUrl : 'bug-detail-template.html',
+					controller : 'bugDetailController'
 				})
 				.otherwise({
 					redirectTo : '/list'
 				});
 		});
+
+		bugTrackerApp.controller("bugDetailController", ['$scope', '$routeParams', 'bugService', function($scope, $routeParams, bugService){
+			bugService.get($routeParams.id).then(function(bug){
+				$scope.bug = bug;
+			});
+		}]);
 
 		bugTrackerApp.value("defaultBugName", '[Default Bug]');
 
@@ -140,9 +147,16 @@
 					});
 			}
 
+			function getById(id){
+				return $http.get('/bugs/' + id).then(function(response){
+					return response.data;
+				});
+			}
+
 			return {
 				getAll : getAllBugs,
-				add : add
+				add : add,
+				get : getById
 			};
 		})
 

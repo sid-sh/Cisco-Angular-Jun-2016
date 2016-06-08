@@ -27,6 +27,7 @@
 						{{bug.name | trimText:20}}
 					</span>
 					<span class="elapsed">{{bug.createdAt | elapsed}}</span>
+					<div><a href="#/details/{{bug.id}}">More</a></div>
 				</li>
 			</ol>
 			<input type="button" value="Remove Closed" ng-click="removeClosed()">
