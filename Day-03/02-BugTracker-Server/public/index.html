@@ -98,32 +98,59 @@
 			};
 		});
 
+		bugTrackerApp.factory('bugService', function($http, bugOperations){
+			function getAllBugs(){
+				/*var promise = $http.get('/bugs');
+				var resultPromise = promise.then(function(response){
+					return response.data;
+				});
+				return resultPromise;*/
 
-		bugTrackerApp.controller("bugsController", function($scope, bugStorage, $http, bugOperations){
+				return $http
+					.get('/bugs')
+					.then(function(response){
+						return response.data;
+					});
+			}
+			function add(bugName){
+				var newBug = bugOperations.createNew(0,bugName);
+				return $http
+					.post('/bugs', newBug)
+					.then(function(response){
+						return response.data;
+					});
+			}
+
+			return {
+				getAll : getAllBugs,
+				add : add
+			};
+		})
+
+		bugTrackerApp.controller("bugsController", function($scope, bugStorage, $http, bugOperations, bugService){
 			
 			$scope.bugs = [];
 
-			var promise = $http.get("/bugs");
-			promise.then(function(response){
-				$scope.bugs = response.data;
+			bugService.getAll().then(function(bugs){
+				$scope.bugs = bugs;
 			});
 
 			$scope.addNew = function(bugName){
-				var newBug = bugOperations.createNew(0,bugName);
-				var promise = $http.post('/bugs', newBug);
-				promise.then(function(response){
-					$scope.bugs.push(response.data);
+				bugService.add(bugName).then(function(newBug){
+					$scope.bugs.push(newBug);
 				});
 			};
 
 			$scope.toggle = function(bug){
-				bugStorage.toggle(bug);
+
+				bugOperations.toggle(bug);
+				$http.put('/bugs/' + bug.id, bug);
 			};
 
 			$scope.removeClosed = function(){
 				for(var i=$scope.bugs.length-1; i>=0; i--)
 					if ($scope.bugs[i].isClosed){
-						bugStorage.remove($scope.bugs[i]);
+						$http.delete('/bugs/' + $scope.bugs[i].id, $scope.bugs[i]);
 						$scope.bugs.splice(i,1);
 					}
 			};

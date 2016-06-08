@@ -1,15 +1,9 @@
 {
   "bugs": [
     {
-      "id": 1,
-      "name": "Object reference not found",
-      "isClosed": false,
-      "createdAt": "2016-06-08T04:16:34.545Z"
-    },
-    {
       "id": 2,
       "name": "Server communication failure",
-      "isClosed": true,
+      "isClosed": false,
       "createdAt": "2016-06-08T05:16:34.545Z"
     },
     {
@@ -29,6 +23,12 @@
       "name": "User experience is poor",
       "isClosed": false,
       "createdAt": "2016-06-08T05:45:36.234Z"
+    },
+    {
+      "id": 6,
+      "name": "Unable to add a new bug",
+      "isClosed": false,
+      "createdAt": "2016-06-08T06:38:51.088Z"
     }
   ]
 }
